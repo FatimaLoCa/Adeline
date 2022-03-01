@@ -31,20 +31,22 @@ class Perceptron_:
             done = True
             #print(em)
             for i in range(0,self.m): 
-                have = self.pw(self.X[i],self.W)
+                have = self.pw(self.X[i],self.W) #-self.theta
                 error = self.Y[i] - have
                 #print('i= '+str(i)+'deseo: '+str(self.Y[i])+' obtuve: '+ str(have))
                 if error != 0:
                     #print('entré')
                     done = False
                     self.change_W(error, self.X[i])
-            
+
             em += 1
 
         self.mostrar()
         self.calcular_Y_ob()
         print(self.y_ob)
         print(self.Y)
+        print(em)
+        self.plotear()
 
     def calcular_Y_ob(self):
         for i in range(0,self.m):
@@ -83,7 +85,12 @@ class Perceptron_:
                 clase1.append(self.X[i])
         v_clase0 = np.array(clase0)
         v_clase1 = np.array(clase1)
-        plt.plot(v_clase0[:,0],v_clase0[:,1] , 'ro')
-        plt.plot(v_clase1[:,0],v_clase1[:,1] , 'bo')
+        plt.plot(v_clase0[:,1],v_clase0[:,2] , 'ro')
+        plt.plot(v_clase1[:,1],v_clase1[:,2] , 'bo')
         plt.axis([-1, 1, -1, 1])
+        x1= -0.9
+        x2=  -( self.W[1]/self.W[2]) * x1 + (self.theta/self.W[2])
+        x1_ = 0.9
+        x2_ =  -( self.W[1]/self.W[2]) * x1_ + (self.theta/self.W[2])
+        plt.plot([x1,x2],[x1_,x2_], 'g')
         plt.show()

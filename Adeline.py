@@ -2,9 +2,14 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import random
+from Perceptron import Perceptron_
+#import rhinoscriptsytnax as rs
+
+
 
 def sigmoid(z):
-    return 1 / (1+math.exp(-z))
+    return 1 / (1 + math.exp(-z))
 
 
 class Adeline_:
@@ -25,47 +30,44 @@ class Adeline_:
 
         self.ones= np.ones((self.m,1)) * -1 #Vector de -1
         self.y_ob = []
-        
-        #print(self.m)
-        #print(self.n)
-        #self.plotear()
 
     def iniciar(self):
         self.X = np.hstack((self.ones,self.X)) #agrega los -1
         self.n += 1
-        error=0
-        errorMed = 0
+        error = 0
+        errorMed = 2
         em = 0 #Contador de epocas
-        
-        while errorMed == self.errorMin and em < self.epochM: #mientras no se ha terminado y no se cumplan las epocas
+        plt.figure(1)
+        plt.plot()
+        while errorMed > self.errorMin and em < self.epochM: #mientras no se ha terminado y no se cumplan las epocas
             errorMed = 0
             for i in range(0,self.m): 
-                have = self.pw(self.X[i],self.W)
-                self.y[i] = have
+                pw_ = self.pw(self.X[i],self.W) #Dentro de pw se hace la sigmoide 
+
+                #have = self.fx(pw_) # f(y) = f(pw)}
+                have = pw_
+                self.y[i] = have 
                 error = self.Y[i] - have
-                errorMed += error
-                #print('i= '+str(i)+'deseo: '+str(self.Y[i])+' obtuve: '+ str(have))
                 
-                self.change_W(error, self.X[i], self.y[i])
+                errorMed += np.abs(error)
+                
+                
+                self.change_W(error, self.X[i], pw_)
             
-            errorMed = error/self.m
+            errorMed = errorMed/self.m
+            
+            #print(errorMed)
             em += 1
 
-        #self.mostrar()
-        #self.calcular_Y_ob()
         print(self.y)
-        #print(self.Y)
-        self.plotear()
+        
+        print(self.Y)
+        print(em)
 
-    
-    def calcular_Y_ob(self):
-        for i in range(0,self.m):
-            have = self.y[i]
-            if have >= 0 :
-                self.y_ob.append(1)
-            else:
-                self.y_ob.append(0)
-    
+        for j in range(0,self.m):
+            #print(self.y[j,0])
+            self.y_ob.append(self.y[j,0])
+        self.plotear()
     
     def change_W(self, error, x, y):
         nw = [0,0,0]
@@ -80,26 +82,60 @@ class Adeline_:
             pw_ += w[i] * x[i]
 
         return sigmoid(pw_)
-			
+
+    
     def mostrar(self):
         print('W0 = %4f'% self.W[0]) 
         print('w1 = %4f'% self.W[1])
         print('W2 = %4f'% self.W[2])
 
     def plotear(self):
+        dato1 = [ 1, 1, 0]
+        dato2 = [-1, -1, 1]
+        have = self.pw(dato1,self.W)
+        have2 = self.pw(dato2,self.W)
+        #print(have)
+        #print(have2)
+        plt.plot(dato1[0],dato1[1] , 'ro')
+        plt.plot(dato2[0],dato2[1] , 'bo')
+        clase0 = []
+        clase1 = []
         for i in range(0,self.m):
-            plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (0.8, 0.2, 0.5))
+            if self.Y[i] == 0:
+                clase0.append(self.X[i])
+            else:
+                clase1.append(self.X[i])
+
+        v_clase0 = np.array(clase0)
+        v_clase1 = np.array(clase1)
+
+        plt.plot(v_clase0[:,1],v_clase0[:,2] , 'ro') # Clase 0
+        plt.plot(v_clase1[:,1],v_clase1[:,2] , 'bo') # Clase 1
+
+        
+        for i in range(0,self.m):
+            color = round(self.y_ob[i], 2)
+            print(color)
+            if(self.y[i] >= 0.5): #Mayor a 0.5 - Clase 1
+                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (0, color, 0))
+            else: # Clase 0                                                R   G   B
+                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (1-color, 0, 0.2))
 
         plt.axis([-1, 1, -1, 1])
         plt.show()
+
+    def degradado(self):
+        pass
+            
     
 def run():
     
     matriz = np.loadtxt('dataset_Perceptron.txt',delimiter = ',')
-    em = 400
-    theta = 0.1
-    W = [5,4,3]
-    err = 0
+    em = 100
+    theta = 0.4
+    W = [random.random() for i in range(1,4)]
+    print(W)
+    err = 0.1
 
     #p = Perceptron_(W,matriz,theta,em)
     #p.iniciar()
@@ -109,3 +145,5 @@ def run():
 
 if __name__ == '__main__':
     run()
+
+
