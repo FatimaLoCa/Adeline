@@ -37,8 +37,9 @@ class Adeline_:
         error = 0
         errorMed = 2
         em = 0 #Contador de epocas
+        fig, ax = plt.subplots()
         plt.figure(1)
-        plt.plot()
+        self.plotear()
         while errorMed > self.errorMin and em < self.epochM: #mientras no se ha terminado y no se cumplan las epocas
             errorMed = 0
             for i in range(0,self.m): 
@@ -53,21 +54,32 @@ class Adeline_:
                 
                 
                 self.change_W(error, self.X[i], pw_)
-            
+
+                m=-(self.W[1]/self.W[2])
+                b=(self.W[0]/self.W[2])
+                line=plt.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+                plt.pause(.1)
+                line_del = line.pop(0)
+                line_del.remove()
+
             errorMed = errorMed/self.m
             
             #print(errorMed)
             em += 1
+        m=-(self.W[1]/self.W[2])
+        b=(self.W[0]/self.W[2])
+        plt.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+
 
         print(self.y)
         
         print(self.Y)
         print(em)
 
-        for j in range(0,self.m):
-            #print(self.y[j,0])
-            self.y_ob.append(self.y[j,0])
-        self.plotear()
+        # for j in range(0,self.m):
+        #     #print(self.y[j,0])
+        #     self.y_ob.append(self.y[j,0])
+        #self.plotear()
     
     def change_W(self, error, x, y):
         nw = [0,0,0]
@@ -81,6 +93,7 @@ class Adeline_:
         for i in range(0,self.n):
             pw_ += w[i] * x[i]
 
+        #return sigmoid(pw_)
         return sigmoid(pw_)
 
     
@@ -112,17 +125,6 @@ class Adeline_:
         plt.plot(v_clase0[:,1],v_clase0[:,2] , 'ro') # Clase 0
         plt.plot(v_clase1[:,1],v_clase1[:,2] , 'bo') # Clase 1
 
-        
-        for i in range(0,self.m):
-            color = round(self.y_ob[i], 2)
-            print(color)
-            if(self.y[i] >= 0.5): #Mayor a 0.5 - Clase 1
-                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (0, color, 0))
-            else: # Clase 0                                                R   G   B
-                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (1-color, 0, 0.2))
-
-        plt.axis([-1, 1, -1, 1])
-        plt.show()
 
     def degradado(self):
         pass
@@ -132,7 +134,7 @@ def run():
     
     matriz = np.loadtxt('dataset_Perceptron.txt',delimiter = ',')
     em = 100
-    theta = 0.4
+    theta = 0.1
     W = [random.random() for i in range(1,4)]
     print(W)
     err = 0.1

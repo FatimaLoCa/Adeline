@@ -38,6 +38,7 @@ class Perceptron_:
                     #print('entré')
                     done = False
                     self.change_W(error, self.X[i])
+                    
 
             em += 1
 
