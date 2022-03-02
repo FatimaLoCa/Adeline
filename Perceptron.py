@@ -6,14 +6,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backend_bases import MouseButton
 from entry import Entry
+import tkinter as tk
+
 
 data=[]
 fig, ax = plt.subplots()
 ax_clean=ax
 
 #plotea de -1 a 1
-plt.xlim([-2,2])
-plt.ylim([-2,2])
+plt.xlim([0,4])
+plt.ylim([0,4])
 def paint():
     for entry in data:
         if entry.get_Clase() ==1:
@@ -39,8 +41,8 @@ class Index:
         matriz=np.transpose(matriz)
         paint()
         #print(matriz)
-        em = 60
-        theta = .01
+        em = 100
+        theta = .4
         W = [random.random() for i in range(1,4)]
         print(W)
         err = 0
@@ -73,6 +75,7 @@ class Perceptron_:
         error=0
         em=0
         print("con -1",self.X)
+
         while done == False and em<self.epochM: #mientras no se ha terminado y no se cumplan las epocas
             done = True
             for i in range(0,self.m): 
@@ -84,21 +87,31 @@ class Perceptron_:
                     self.change_W(error, self.X[i])
                     m=-(self.W[1]/self.W[2])
                     b=(self.W[0]/self.W[2])
-                    line=ax.plot([-1,1],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+                    calculados=[x2*m +b for x2 in self.X]
+                    #line=ax.plot([self.X[0][1],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+                    
+                    line=ax.plot(self.X,calculados)
                     plt.pause(.1)
-                    line_del = line.pop(0)
-                    line_del.remove()
+                    for i in line:
+                        line_=line.pop(0)
+                        line_.remove()
+                    line_=line.pop(0)
+                    line_.remove()
                     
             em += 1
-            if em == self.epochM:
-                print("no logramos converger")
             print("epocas",em, "W",self.W)
+            if em == self.epochM:
+                tk.messagebox.showerror(title="PERCEPTRON FALLO", message="No logramos converger 😢😢😢")
+                plt.close()
+                return
            
             
             
         m=-(self.W[1]/self.W[2])
         b=(self.W[0]/self.W[2])
-        ax.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:red')          
+        calculados=[x2*m +b for x2 in self.X]
+                    #line=ax.plot([self.X[0][1],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+        ax.plot(self.X,calculados,color='tab:red')        
         plt.draw()
         self.calcular_Y_ob()
 
