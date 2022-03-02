@@ -33,26 +33,29 @@ class Adeline_:
     def iniciar(self):
         self.X = np.hstack((self.ones,self.X)) #agrega los -1
         self.n += 1
-        
+        error=0
         errorMed = 0
         em = 0 #Contador de epocas
         
         while errorMed == self.errorMin and em < self.epochM: #mientras no se ha terminado y no se cumplan las epocas
-            error=0
+            errorMed = 0
             for i in range(0,self.m): 
                 have = self.pw(self.X[i],self.W)
                 self.y[i] = have
-                error += self.Y[i] - have
+                error = self.Y[i] - have
+                errorMed += error
                 #print('i= '+str(i)+'deseo: '+str(self.Y[i])+' obtuve: '+ str(have))
                 
                 self.change_W(error, self.X[i], self.y[i])
             
+            errorMed = error/self.m
             em += 1
 
-        self.mostrar()
-        self.calcular_Y_ob()
+        #self.mostrar()
+        #self.calcular_Y_ob()
         print(self.y)
-        print(self.Y)
+        #print(self.Y)
+        self.plotear()
 
     
     def calcular_Y_ob(self):
@@ -84,18 +87,9 @@ class Adeline_:
         print('W2 = %4f'% self.W[2])
 
     def plotear(self):
-        #plt.plot(self.X[:,0],self.X[:,1] , 'ro')
-        clase0 = []
-        clase1 = []
         for i in range(0,self.m):
-            if self.Y[i] == 0:
-                clase0.append(self.X[i])
-            else:
-                clase1.append(self.X[i])
-        v_clase0 = np.array(clase0)
-        v_clase1 = np.array(clase1)
-        plt.plot(v_clase0[:,0],v_clase0[:,1] , 'ro')
-        plt.plot(v_clase1[:,0],v_clase1[:,1] , 'bo')
+            plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (0.8, 0.2, 0.5))
+
         plt.axis([-1, 1, -1, 1])
         plt.show()
     
