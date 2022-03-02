@@ -12,13 +12,13 @@ fig, ax = plt.subplots()
 ax_clean=ax
 
 #plotea de -1 a 1
-plt.xlim([-2,2])
-plt.ylim([-2,2])
+plt.xlim([-1,1])
+plt.ylim([-1,1])
 def paint():
     for entry in data:
         if entry.get_Clase() ==1:
             ax.scatter(x=entry.get_X(),y=entry.get_Y(),color='tab:cyan')
-            #print("x posicion click",entry.get_X()," y pos clik",entry.get_Y())
+            print("x posicion click",entry.get_X()," y pos clik",entry.get_Y())
         else:
             ax.scatter(x=entry.get_X(),y=entry.get_Y(),color='tab:pink')
 
@@ -40,7 +40,7 @@ class Index:
         paint()
         #print(matriz)
         em = 60
-        theta = .01
+        theta = .1
         W = [random.random() for i in range(1,4)]
         print(W)
         err = 0
@@ -84,10 +84,9 @@ class Perceptron_:
                     self.change_W(error, self.X[i])
                     m=-(self.W[1]/self.W[2])
                     b=(self.W[0]/self.W[2])
-                    line=ax.plot([-1,1],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
-                    plt.pause(.1)
-                    line_del = line.pop(0)
-                    line_del.remove()
+                    line=ax.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
+                    plt.pause(.6)
+                    line.pop()
                     
             em += 1
             if em == self.epochM:
@@ -98,7 +97,8 @@ class Perceptron_:
             
         m=-(self.W[1]/self.W[2])
         b=(self.W[0]/self.W[2])
-        ax.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:red')          
+        ax.plot([self.X[0][0],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:green')
+                    
         plt.draw()
         self.calcular_Y_ob()
 
@@ -111,7 +111,7 @@ class Perceptron_:
         nw = [0,0,0]
         for i in range(0,self.n):
             nw[i] = self.W[i] + (self.theta * error * x[i])
-            #print("w i:",i,self.W[i],"theta",self.theta,"error ",error,"x[i]",x[i],"nuevo W",nw[i])
+            print("w i:",i,self.W[i],"theta",self.theta,"error ",error,"x[i]",x[i],"nuevo W",nw[i])
         self.W = nw
 
         
