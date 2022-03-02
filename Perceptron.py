@@ -56,8 +56,8 @@ class Perceptron_:
     def change_W(self, error, x):
         nw = [0,0,0]
         for i in range(0,self.n):
-            nw[i] = self.W[i] + (self.theta * error * x[i])
-        self.W = nw
+            self.W[i] = self.W[i] + (self.theta * error * x[i])
+        #self.W = nw
         
 
     def pw(self,x,w):
