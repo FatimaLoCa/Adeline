@@ -109,38 +109,12 @@ class Adeline_:
         graphic_points = np.arange(-10, 10, .1)
         line_func = -((self.W[1]/self.W[2]) * graphic_points) - (self.W[0]/self.W[2])
         plt.plot(graphic_points, line_func)
-
-        fig, ax = plt.subplots()
-        fig.subplots_adjust(bottom=0.2)
         
-        axbox = fig.add_axes([0.1, 0.05, 0.8, 0.075])
-        text_box = TextBox(axbox, "Evaluate", textalignment="center")
-        
-
         plt.axis([-1, 1, -1, 1])
         plt.show()
-
-    def plot_final(self):
-        for i in range(0,self.m):
-            color = round(self.y_ob[i], 2)
-            print(color)
-            if(self.y[i] >= 0.5): #Mayor a 0.5 - Clase 1
-                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (0, color, 0))
-            else: # Clase 0                                                R   G   B
-                plt.plot(self.X[i][1],self.X[i][2], marker = "*", color = (1-color, 0, 0.2))
-
-        x1= 2
-        x2=  -(( self.W[1]/self.W[2]) * x1) - (self.W[0]/self.W[2])
-        x1_ = -2
-        x2_ =  -(( self.W[1]/self.W[2]) * x1_) - (self.W[0]/self.W[2])
-        plt.plot([x1,x2],[x1_,x2_], 'g')
-
-    def degradado(self):
-        pass
             
     
 def run():
-    
     matriz = np.loadtxt('dataset_Perceptron.txt',delimiter = ',')
     em = 500
     theta = 0.4
