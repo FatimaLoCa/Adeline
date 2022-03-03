@@ -30,6 +30,7 @@ class Adeline_:
         self.point_calculado=[]
         self.graphic_points = np.arange(-10, 10, .1)
         self.epocas_totales_realizadas=0
+        self.errores=[]
     def get_graphic_points(self):
         return  self.graphic_points
     def get_pocas_totales_realizadas(self):
@@ -51,18 +52,24 @@ class Adeline_:
                 self.y[i] = have
                 error = self.Y[i] - have
                 errorMed += error*error
+                
                 self.change_W(error, self.X[i], have)
                 line_func = -((self.W[1]/self.W[2]) * self.graphic_points) - (self.W[0]/self.W[2])
                 self.point_calculado.append(line_func)
             errorMed = errorMed/self.m
+            self.errores.append(errorMed)
             em+=1
+        
         line_func = -((self.W[1]/self.W[2]) * self.graphic_points) - (self.W[0]/self.W[2])
         self.point_calculado.append(line_func)
+        
+        errorMed = errorMed/self.m
+        self.errores.append(errorMed)
         self.epocas_totales_realizadas=em
         if self.epochM==em:
-            return self.point_calculado, -1 #murio
+            return self.point_calculado, -1,self.errores#murio
         else:
-            return self.point_calculado, 1#jalo
+            return self.point_calculado, 1,self.errores#jalo
 
 
         for j in range(0,self.m):

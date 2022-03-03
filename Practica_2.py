@@ -24,7 +24,8 @@ plt.xlim([-2,2])
 plt.ylim([-2,2])
 lr = 0.1
 errm = 0.1
-epM = 100
+epM = 10
+
 graphic_points = np.arange(-1, 1, .1)
 t = np.arange(-1.0, 1.0, 0.001)
 
@@ -41,6 +42,13 @@ def matriz(self,event):
 
 
 def adaline_inicialize(event):
+    fig2, ax2 = plt.subplots()
+    ite=0
+    ite_=1
+    plt.show()
+    numbers=[]
+    err=[]
+    set_datos=entry_to_matriz()
     if len(set_datos)==0:
         tk.messagebox.showerror(title="VERIFIQUE", message="NO TENEMOS SET DE DATOS 😢😢😢")
         return
@@ -48,15 +56,25 @@ def adaline_inicialize(event):
     if aux.W[0]==0:
         aux.W= [random.random() for i in range(1,4)]
     adaline=Adeline_(aux.W,set_datos,lr,epM,errm)
-        
-    graphic_points,convergio=adaline.iniciar()
+    if aux.flag_line_W:
+        aux.line_=aux.line_w.pop(0)
+        aux.line_.remove()   
+    graphic_points,convergio,errores=adaline.iniciar()
     points=adaline.get_graphic_points()
+    #print(len(graphic_points),"<= grafic =>",len(errores))
     for point in graphic_points:
-        line=ax.plot(points,point)
-        plt.pause(.1)
+        numbers.append(ite_)
+        err.append(errores[int(ite)])
+        line=ax.plot(point,points)
+        for p in points:
+            line_2=ax2.bar(numbers,err,color='tab:green')
+        plt.pause(.01)
         for i in line:
             line_=line.pop(0)
             line_.remove()
+        plt.draw()
+        ite_+=1
+        ite+=.3
     if convergio ==-1:
         tk.messagebox.showerror(title="Adaline FALLO", message="No logramos converger 😢😢😢")
         plt.close()
