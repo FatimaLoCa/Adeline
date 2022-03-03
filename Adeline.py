@@ -5,8 +5,8 @@ import math
 import random
 from Perceptron import Perceptron_
 #import rhinoscriptsytnax as rs
-
-
+from tkinter import *
+from matplotlib.widgets import TextBox
 
 def sigmoid(z):
     return (1 / (1 + np.exp(-1 * z)))
@@ -109,8 +109,12 @@ class Adeline_:
         graphic_points = np.arange(-10, 10, .1)
         line_func = -((self.W[1]/self.W[2]) * graphic_points) - (self.W[0]/self.W[2])
         plt.plot(graphic_points, line_func)
+
+        fig, ax = plt.subplots()
+        fig.subplots_adjust(bottom=0.2)
         
-        
+        axbox = fig.add_axes([0.1, 0.05, 0.8, 0.075])
+        text_box = TextBox(axbox, "Evaluate", textalignment="center")
         
 
         plt.axis([-1, 1, -1, 1])
