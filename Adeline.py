@@ -7,6 +7,7 @@ from Perceptron import Perceptron_
 #import rhinoscriptsytnax as rs
 from tkinter import *
 from matplotlib.widgets import TextBox
+from tabulate import tabulate
 
 def sigmoid(z):
     return (1 / (1 + np.exp(-1 * z)))
@@ -28,6 +29,8 @@ class Adeline_:
         self.ones= np.ones((self.m,1)) 
         self.y_ob = []
 
+        
+
     def iniciar(self):
         self.X = np.hstack((self.ones,self.X)) #agrega los 1
         self.n += 1
@@ -36,7 +39,12 @@ class Adeline_:
         error = 0
         errorMed = 2
         em = 0 #Contador de epocas
-        
+        fig = plt.figure(1)
+        plt.plot(em,errorMed)
+        plt.axis([-1, 1, -1, 1])
+        plt.show()
+        errores = []
+        epocas = []
         while errorMed >= self.errorMin and em < self.epochM: #mientras no se ha terminado y no se cumplan las epocas
             errorMed = 0
             for i in range(0,self.m):
@@ -47,11 +55,13 @@ class Adeline_:
                 errorMed += error*error
                 self.change_W(error, self.X[i], have)
             errorMed = errorMed/self.m
+            errores.append(errorMed)
+            epocas.append(em)
+            plt.figure(1)
+            plt.plot(epocas,errores)
+            plt.draw()
             em+=1
-
-        #print(em)
-        
-        
+            
 
         for j in range(0,self.m):
             self.y_ob.append(self.y[j,0]) # Esta Y es la que se usa para plotear, es una lista
@@ -110,10 +120,55 @@ class Adeline_:
         line_func = -((self.W[1]/self.W[2]) * graphic_points) - (self.W[0]/self.W[2])
         plt.plot(graphic_points, line_func)
         
+        #self.barrido()
+        self.matrizConv()
         plt.axis([-1, 1, -1, 1])
         plt.show()
+        
+
+
+    def barrido(self):
+        y = -1
+        x = -1
+        while y <= 1:
+            x=-1
+            while x <= 1:
+                
+                pw_ = sigmoid(self.pw([1,x,y],self.W))
+                #color = round(pw_, 2)
+
+                if(pw_ >= 0.5): #Mayor a 0.5 - Clase 1
+                    plt.plot(x,y, marker = "o", color = (0, pw_, 0)) # Verde
+                else: # Clase 0                            R   G   B
+                    plt.plot(x,y, marker = "o", color = (1-pw_, 0, 0)) # Rojo
+                x+=0.1
+
+            y+=0.1
+
+    def matrizConv(self):
+        clase_0 = 0
+        clase_1 = 0
+        falso_0 = 0
+        falso_1 = 0
+        for i in range(0,self.m):
             
-    
+            if self.Y[i] == 0 and self.y[i,0] < 0.5: #queria 0 obtuve 0
+                    clase_0 += 1
+            elif self.Y[i] == 1 and self.y[i,0] >= 0.5: #queria 1 obtuve 1
+                    clase_1 += 1
+            elif self.Y[i] == 0 and self.y[i,0] >= 0.5: #queria 0 obtuve 1
+                    falso_1 += 1
+            elif self.Y[i] == 1 and self.y[i,0] < 0.5: #queria 1 obtuve 0
+                    falso_0 += 1
+        
+
+        
+        datos = [['Datos: '+str(self.m), 'PRED 0', 'PRED 1',' '],
+                ['REAL 0', str(clase_0), str(falso_1),str(clase_0+falso_1)],
+                ['REAL 1', str(falso_0), str(clase_1),str(clase_1+falso_0)],
+                [' ', str(clase_0+falso_0),str(clase_1+falso_1),' ']]
+        print(tabulate(datos, tablefmt='fancy_grid'))
+
 def run():
     matriz = np.loadtxt('dataset_Perceptron.txt',delimiter = ',')
     em = 500
