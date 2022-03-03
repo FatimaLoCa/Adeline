@@ -1,4 +1,5 @@
 import random
+<<<<<<< HEAD
 from tkinter import Checkbutton
 #from types import NoneType 
 from matplotlib.widgets import Button
@@ -54,6 +55,10 @@ class Index:
     def mapear(self, event):
         print("dio click mapear")
 
+=======
+
+import numpy as np
+>>>>>>> 80d5407f1aaaa583649ddbafb66d53be3d5465cd
 
 class Perceptron_:
     def _init_(self, W, matriz, theta, epochM):
@@ -67,6 +72,10 @@ class Perceptron_:
         self.epochM = epochM
         self.ones= np.ones((self.m,1))  *-1
         self.y_ob = []
+<<<<<<< HEAD
+=======
+        self.point_calculado=[]
+>>>>>>> 80d5407f1aaaa583649ddbafb66d53be3d5465cd
 
     def iniciar(self):
         self.X = np.hstack((self.ones,self.X)) #agrega los -1
@@ -88,6 +97,7 @@ class Perceptron_:
                     m=-(self.W[1]/self.W[2])
                     b=(self.W[0]/self.W[2])
                     calculados=[x2*m +b for x2 in self.X]
+<<<<<<< HEAD
                     #line=ax.plot([self.X[0][1],self.Y[0]],[m*self.X[0][1]+b, m*self.Y[1]+b],color='tab:orange')
                     
                     line=ax.plot(self.X,calculados)
@@ -114,7 +124,19 @@ class Perceptron_:
         ax.plot(self.X,calculados,color='tab:red')        
         plt.draw()
         self.calcular_Y_ob()
+=======
+                    self.point_calculado.append(calculados)
+>>>>>>> 80d5407f1aaaa583649ddbafb66d53be3d5465cd
 
+            em += 1
+            if em == self.epochM:
+                return self.point_calculado,-1
+                
+        m=-(self.W[1]/self.W[2])
+        b=(self.W[0]/self.W[2])
+        calculados=[x2*m +b for x2 in self.X]
+        return self.point_calculado,em
+         
     def calcular_Y_ob(self):
         for i in range(0,self.m):
             have = self.pw(self.X[i],self.W)
@@ -144,6 +166,7 @@ class Perceptron_:
         print('W2 = %4f'% self.W[2])
 
 
+<<<<<<< HEAD
 
 
 def on_click(event):
@@ -186,3 +209,7 @@ def run():
 
 if __name__ == '__main__':
     window()
+=======
+def run():
+    pass
+>>>>>>> 80d5407f1aaaa583649ddbafb66d53be3d5465cd
