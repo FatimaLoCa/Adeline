@@ -2,7 +2,7 @@
 import imp
 from pdb import line_prefix
 from tkinter import Checkbutton
-from types import NoneType
+#from types import NoneType
 from matplotlib.widgets import Button
 import numpy as np
 from matplotlib.backend_bases import MouseButton
@@ -16,8 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 from matplotlib.widgets import Button
-from threading  import  Thread
-
+from Adeline import sigmoid
 
 fig, ax = plt.subplots()
 data=[]
@@ -31,6 +30,7 @@ epM = 500
 graphic_points = np.arange(-1, 1, .1)
 t = np.arange(-1.0, 1.0, 0.001)
 
+
 class aux:
         
     W=[0,0,0]
@@ -39,14 +39,11 @@ class aux:
     line_=""
     
 aux_=aux()
-def matriz(self,event):
-    print("matriz")
 
 
 def adaline_inicialize(event):
     fig2, ax2 = plt.subplots()
     ite=0
-    ite_=1
     plt.show()
     numbers=[]
     err=[]
@@ -63,11 +60,14 @@ def adaline_inicialize(event):
         aux.line_.remove()   
     graphic_points,convergio,errores,ultimo_w=adaline.iniciar()
     points=adaline.get_graphic_points()
-    print(len(graphic_points),"<= grafic =>",len(errores))
-    for point in graphic_points:
-        numbers.append(ite_)
-        err.append(errores[int(ite)])
-        line=ax.plot(point,points)
+    print("Epocas",adaline.epocas_totales_realizadas)
+    #print(len(graphic_points),"<= grafic =>",len(errores))
+    for i in range(0,adaline.epocas_totales_realizadas):
+    # for point in graphic_points:
+        #print("epoca",i," soy iterador graphic",ite," soy iterador error =>",int(ite))
+        numbers.append(i)
+        err.append(errores[i])
+        line=ax.plot(points,graphic_points[i*len(data)])
         plt.pause(0.1)
         for p in points:
             line_2=ax2.plot(numbers,err,color='tab:green')
@@ -75,15 +75,54 @@ def adaline_inicialize(event):
             line_=line.pop(0)
             line_.remove()
         plt.draw()
-        ite_+=1
         ite+=len(data)*0.1
     if convergio ==-1:
-        tk.messagebox.showerror(title="Adaline FALLO", message="No logramos converger 😢😢😢")
-        plt.close()
+        print("Aparenta que no convergio")
+        adaline.matrizConv()
         return
-    tk.messagebox.showinfo(title="Adaline CONVERGIO", message="logramos converger 😍😍")
-    barrido(ultimo_w)
+    print("convergió")
+    adaline.matrizConv()
+    w_ = adaline.get_W()
+    barrido(w_)
+    paint()
+    perceptron_point= Perceptron_(aux.W,set_datos,lr,epM)
+    draw_perceptron(perceptron_point.iniciar(),perceptron_point.X)
+    plt.draw()
 
+def draw_perceptron(points,x):
+    len__=len(points)
+    print("len perceptron",len__)
+    ax.plot(x,points[len__-1],color='tab:orange')
+
+
+
+def pw(x,w):
+        pw_ = 0
+        for i in range(0,len(x)):
+            pw_ += x[i] * w[i]
+
+        return pw_
+
+def barrido(W):
+        min = -2
+        max = 2
+        paso = 0.1
+        y_ = min
+        x_ = min
+        while y_ <= max:
+            x_= min
+            while x_ <= max:
+                pw_ = sigmoid(pw([1,x_,y_],W))
+                #color = round(pw_, 2)
+                if(pw_ >= 0.5): #Mayor a 0.5 - Clase 1
+                    ax.scatter(x=x_,y=y_,color= (0, pw_, 0))
+                    #plt.plot(x,y, marker = "o", color = (0, pw_, 0, 1-pw_)) # Verde
+                else: # Clase 0                            R   G   B
+                    ax.scatter(x=x_,y=y_,color= (1-pw_, 0, 0))
+                    #plt.plot(x,y, marker = "o", color = (1-pw_, 0, 0, pw_)) # Rojo
+                x_+=paso
+
+            y_+=paso
 
 def init_w(event):
     if aux.flag_line_W:
@@ -147,22 +186,7 @@ def submit_ep(expression):
 
 def sigmoid(z):
     return (1 / (1 + np.exp(-1 * z)))
-def barrido(W):
-        y = -1
-        x = -1
-        while y <= 1:
-            x=-1
-            while x <= 1:
-                pw_ = sigmoid(np.dot([1,x,y],W))
-                #color = round(pw_, 2)
 
-                if(pw_ >= 0.5): #Mayor a 0.5 - Clase 1
-                    plt.scatter(x,y, color = (0, pw_, 0)) # Verde
-                else: # Clase 0                            R   G   B
-                    plt.scatter(x,y, color = (1-pw_, 0, 0)) # Rojo
-                x+=0.01
-
-            y+=0.01
 
 def window():
     
@@ -189,9 +213,6 @@ def window():
     b_ada = Button(ax_ada, 'Adaline')
     b_ada.on_clicked(adaline_inicialize)
 
-    ax_mat = fig.add_axes([0.7, 0.001, 0.2, 0.075])
-    b_mat = Button(ax_mat, 'Matriz')
-    b_mat.on_clicked(matriz)
     
     
     cid = fig.canvas.mpl_connect('button_press_event', onclick)
@@ -200,7 +221,6 @@ def window():
 
 if __name__ == '__main__':
     window()
-
 
 
 

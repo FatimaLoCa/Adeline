@@ -7,6 +7,8 @@ from Perceptron import Perceptron_
 #import rhinoscriptsytnax as rs
 from tkinter import *
 from matplotlib.widgets import TextBox
+from tabulate import tabulate
+
 
 def sigmoid(z):
     return (1 / (1 + np.exp(-1 * z)))
@@ -36,7 +38,7 @@ class Adeline_:
         return  self.graphic_points
         
     def get_pocas_totales_realizadas(self):
-        return self.pocas_totales_realizadas
+        return self.epocas_totales_realizadas
     def iniciar(self):
         self.X = np.hstack((self.ones,self.X)) #agrega los 1
         self.n += 1
@@ -91,5 +93,30 @@ class Adeline_:
 
         return pw_
 
+
+    def matrizConv(self):
+        clase_0 = 0
+        clase_1 = 0
+        falso_0 = 0
+        falso_1 = 0
+        for i in range(0,self.m):
+            
+            if self.Y[i] == 0 and self.y[i,0] < 0.5: #queria 0 obtuve 0
+                    clase_0 += 1
+            elif self.Y[i] == 1 and self.y[i,0] >= 0.5: #queria 1 obtuve 1
+                    clase_1 += 1
+            elif self.Y[i] == 0 and self.y[i,0] >= 0.5: #queria 0 obtuve 1
+                    falso_1 += 1
+            elif self.Y[i] == 1 and self.y[i,0] < 0.5: #queria 1 obtuve 0
+                    falso_0 += 1
+
+        datos = [['Datos: '+str(self.m), 'PRED 0', 'PRED 1',' '],
+                ['REAL 0', str(clase_0), str(falso_1),str(clase_0+falso_1)],
+                ['REAL 1', str(falso_0), str(clase_1),str(clase_1+falso_0)],
+                [' ', str(clase_0+falso_0),str(clase_1+falso_1),' ']]
+        print(tabulate(datos, tablefmt='fancy_grid'))
+
+    def get_W(self):
+        return self.W
 
     

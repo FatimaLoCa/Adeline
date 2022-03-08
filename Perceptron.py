@@ -23,7 +23,10 @@ class Perceptron_:
         error=0
         em=0
         print("con -1",self.X)
-
+        m=-(self.W[1]/self.W[2])
+        b=(self.W[0]/self.W[2])
+        calculados=[x2*m +b for x2 in self.X]
+        self.point_calculado.append(calculados)
         while done == False and em<self.epochM: #mientras no se ha terminado y no se cumplan las epocas
             done = True
             for i in range(0,self.m): 
@@ -45,7 +48,7 @@ class Perceptron_:
         m=-(self.W[1]/self.W[2])
         b=(self.W[0]/self.W[2])
         calculados=[x2*m +b for x2 in self.X]
-        return self.point_calculado,em
+        return self.point_calculado
          
     def calcular_Y_ob(self):
         for i in range(0,self.m):
