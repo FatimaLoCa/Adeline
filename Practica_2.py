@@ -1,4 +1,5 @@
 
+import imp
 from pdb import line_prefix
 from tkinter import Checkbutton
 from types import NoneType
@@ -15,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 from matplotlib.widgets import Button
+from threading  import  Thread
 
 
 fig, ax = plt.subplots()
@@ -24,7 +26,7 @@ plt.xlim([-2,2])
 plt.ylim([-2,2])
 lr = 0.1
 errm = 0.1
-epM = 10
+epM = 500
 
 graphic_points = np.arange(-1, 1, .1)
 t = np.arange(-1.0, 1.0, 0.001)
@@ -59,28 +61,28 @@ def adaline_inicialize(event):
     if aux.flag_line_W:
         aux.line_=aux.line_w.pop(0)
         aux.line_.remove()   
-    graphic_points,convergio,errores=adaline.iniciar()
+    graphic_points,convergio,errores,ultimo_w=adaline.iniciar()
     points=adaline.get_graphic_points()
-    #print(len(graphic_points),"<= grafic =>",len(errores))
+    print(len(graphic_points),"<= grafic =>",len(errores))
     for point in graphic_points:
         numbers.append(ite_)
         err.append(errores[int(ite)])
         line=ax.plot(point,points)
+        plt.pause(0.1)
         for p in points:
-            line_2=ax2.bar(numbers,err,color='tab:green')
-        plt.pause(.01)
+            line_2=ax2.plot(numbers,err,color='tab:green')
         for i in line:
             line_=line.pop(0)
             line_.remove()
         plt.draw()
         ite_+=1
-        ite+=.3
+        ite+=len(data)*0.1
     if convergio ==-1:
         tk.messagebox.showerror(title="Adaline FALLO", message="No logramos converger 😢😢😢")
         plt.close()
         return
-    tk.messagebox.showinfo(title="Adaline CONVERGIO", message="logramos converger en:"+adaline.get_epocas_totales_realizadas()+" epocas 😍😍")
-
+    tk.messagebox.showinfo(title="Adaline CONVERGIO", message="logramos converger 😍😍")
+    barrido(ultimo_w)
 
 
 def init_w(event):
@@ -143,6 +145,24 @@ def submit_ep(expression):
     #print(expression)
     epM = float(expression)
 
+def sigmoid(z):
+    return (1 / (1 + np.exp(-1 * z)))
+def barrido(W):
+        y = -1
+        x = -1
+        while y <= 1:
+            x=-1
+            while x <= 1:
+                pw_ = sigmoid(np.dot([1,x,y],W))
+                #color = round(pw_, 2)
+
+                if(pw_ >= 0.5): #Mayor a 0.5 - Clase 1
+                    plt.scatter(x,y, color = (0, pw_, 0)) # Verde
+                else: # Clase 0                            R   G   B
+                    plt.scatter(x,y, color = (1-pw_, 0, 0)) # Rojo
+                x+=0.01
+
+            y+=0.01
 
 def window():
     

@@ -28,11 +28,13 @@ class Adeline_:
         self.ones= np.ones((self.m,1)) 
         self.y_ob = []
         self.point_calculado=[]
-        self.graphic_points = np.arange(-10, 10, .1)
+        self.graphic_points = np.arange(-1, 1, .1)
         self.epocas_totales_realizadas=0
         self.errores=[]
+        self.all_W=[]
     def get_graphic_points(self):
         return  self.graphic_points
+        
     def get_pocas_totales_realizadas(self):
         return self.pocas_totales_realizadas
     def iniciar(self):
@@ -56,6 +58,7 @@ class Adeline_:
                 self.change_W(error, self.X[i], have)
                 line_func = -((self.W[1]/self.W[2]) * self.graphic_points) - (self.W[0]/self.W[2])
                 self.point_calculado.append(line_func)
+                self.all_W.append(self.W)
             errorMed = errorMed/self.m
             self.errores.append(errorMed)
             em+=1
@@ -63,18 +66,16 @@ class Adeline_:
         line_func = -((self.W[1]/self.W[2]) * self.graphic_points) - (self.W[0]/self.W[2])
         self.point_calculado.append(line_func)
         
+        self.all_W.append(self.W)
         errorMed = errorMed/self.m
         self.errores.append(errorMed)
+
         self.epocas_totales_realizadas=em
         if self.epochM==em:
-            return self.point_calculado, -1,self.errores#murio
+            return self.point_calculado, -1,self.errores,self.W#murio
         else:
-            return self.point_calculado, 1,self.errores#jalo
+            return self.point_calculado, 1,self.errores,self.W#jalo
 
-
-        for j in range(0,self.m):
-            self.y_ob.append(self.y[j,0]) # Esta Y es la que se usa para plotear, es una lista
-        self.plotear()
     
     def change_W(self, error, x, y):
         nw = [0,0,0]
