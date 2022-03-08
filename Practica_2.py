@@ -1,7 +1,7 @@
 
 from pdb import line_prefix
 from tkinter import Checkbutton
-from types import NoneType
+#from types import NoneType
 from matplotlib.widgets import Button
 import numpy as np
 from matplotlib.backend_bases import MouseButton
@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import TextBox
 from matplotlib.widgets import Button
-
+from Adeline import sigmoid
 
 fig, ax = plt.subplots()
 data=[]
@@ -28,6 +28,7 @@ epM = 100
 graphic_points = np.arange(-1, 1, .1)
 t = np.arange(-1.0, 1.0, 0.001)
 
+
 class aux:
         
     W=[0,0,0]
@@ -36,11 +37,10 @@ class aux:
     line_=""
     
 aux_=aux()
-def matriz(self,event):
-    print("matriz")
 
 
 def adaline_inicialize(event):
+    set_datos = entry_to_matriz()
     if len(set_datos)==0:
         tk.messagebox.showerror(title="VERIFIQUE", message="NO TENEMOS SET DE DATOS 😢😢😢")
         return
@@ -48,7 +48,7 @@ def adaline_inicialize(event):
     if aux.W[0]==0:
         aux.W= [random.random() for i in range(1,4)]
     adaline=Adeline_(aux.W,set_datos,lr,epM,errm)
-        
+    
     graphic_points,convergio=adaline.iniciar()
     points=adaline.get_graphic_points()
     for point in graphic_points:
@@ -58,12 +58,45 @@ def adaline_inicialize(event):
             line_=line.pop(0)
             line_.remove()
     if convergio ==-1:
-        tk.messagebox.showerror(title="Adaline FALLO", message="No logramos converger 😢😢😢")
-        plt.close()
+        #tk.messagebox.showerror(title="Adaline FALLO", message="No logramos converger 😢😢😢")
+        print("Aparenta que no convergio")
+        adaline.matrizConv()
+        #plt.close()
         return
-    tk.messagebox.showinfo(title="Adaline CONVERGIO", message="logramos converger en:"+adaline.get_epocas_totales_realizadas()+" epocas 😍😍")
+    #tk.messagebox.showinfo(title="Adaline CONVERGIO", message="logramos converger en:"+adaline.get_epocas_totales_realizadas()+" epocas 😍😍")
+    print("convergió")
+    adaline.matrizConv()
+    w_ = adaline.get_W()
+    barrido(w_)
+    plt.draw()
 
+def pw(x,w):
+        pw_ = 0
+        for i in range(0,len(x)):
+            pw_ += x[i] * w[i]
 
+        return pw_
+
+def barrido(W):
+        min = -2
+        max = 2
+        paso = 0.1
+        y_ = min
+        x_ = min
+        while y_ <= max:
+            x_= min
+            while x_ <= max:
+                pw_ = sigmoid(pw([1,x_,y_],W))
+                #color = round(pw_, 2)
+                if(pw_ >= 0.5): #Mayor a 0.5 - Clase 1
+                    ax.scatter(x=x_,y=y_,color= (0, pw_, 0))
+                    #plt.plot(x,y, marker = "o", color = (0, pw_, 0, 1-pw_)) # Verde
+                else: # Clase 0                            R   G   B
+                    ax.scatter(x=x_,y=y_,color= (1-pw_, 0, 0))
+                    #plt.plot(x,y, marker = "o", color = (1-pw_, 0, 0, pw_)) # Rojo
+                x_+=paso
+
+            y_+=paso
 
 def init_w(event):
     if aux.flag_line_W:
@@ -151,9 +184,6 @@ def window():
     b_ada = Button(ax_ada, 'Adaline')
     b_ada.on_clicked(adaline_inicialize)
 
-    ax_mat = fig.add_axes([0.7, 0.001, 0.2, 0.075])
-    b_mat = Button(ax_mat, 'Matriz')
-    b_mat.on_clicked(matriz)
     
     
     cid = fig.canvas.mpl_connect('button_press_event', onclick)
@@ -162,7 +192,6 @@ def window():
 
 if __name__ == '__main__':
     window()
-
 
 
 
