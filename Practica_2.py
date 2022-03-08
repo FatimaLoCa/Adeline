@@ -25,7 +25,7 @@ plt.xlim([-2,2])
 plt.ylim([-2,2])
 lr = 0.1
 errm = 0.1
-epM = 500
+epM = 100
 
 graphic_points = np.arange(-1, 1, .1)
 t = np.arange(-1.0, 1.0, 0.001)
@@ -174,14 +174,17 @@ def onclick(event):
 
 def submit_lr(expression):
     #print(expression)
+    global lr 
     lr = float(expression)
 
 def submit_Errm(expression):
     #print(expression)
+    global errm 
     errm = float(expression)
 
 def submit_ep(expression):
     #print(expression)
+    global epM 
     epM = float(expression)
 
 def sigmoid(z):
