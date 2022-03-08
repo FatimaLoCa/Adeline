@@ -22,7 +22,6 @@ class Perceptron_:
         done = False
         error=0
         em=0
-        print("con -1",self.X)
         m=-(self.W[1]/self.W[2])
         b=(self.W[0]/self.W[2])
         calculados=[x2*m +b for x2 in self.X]
